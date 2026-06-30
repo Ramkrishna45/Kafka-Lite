@@ -330,14 +330,16 @@ sequenceDiagram
 
 ---
 
-## 📈 Benchmarks
+## 📈 Benchmarks (Real World Data)
+
+These benchmarks were generated on a standard development machine using the automated `benchmark/run_all_benchmarks.py` script.
 
 | Test | Result |
 |------|--------|
-| Single Producer | 12,500 msg/sec |
-| 10 Producers | 71,000 msg/sec |
-| Batch Size 100 | 90,000 msg/sec |
-| Recovery | 2.1 sec |
+| **Single Producer Throughput** | 527,804 msg/sec |
+| **10 Producers Throughput** (Disk Bound) | 326,298 msg/sec |
+| **Batch Size 1000 Latency** (acks=1) | 26.45 ms |
+| **Recovery Time** (1 Million Msgs) | 0.51 sec |
 
 ### Performance Graphs
 

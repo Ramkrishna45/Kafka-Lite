@@ -87,7 +87,7 @@ void TcpServer::stop() {
 }
 
 void TcpServer::handle_client(Socket_t client_socket) {
-    char buffer[4096];
+    char buffer[131072]; // 128KB buffer to handle huge batch sizes (e.g. 1000 messages)
     while (running_) {
         int bytes_received = recv(client_socket, buffer, sizeof(buffer) - 1, 0);
         if (bytes_received <= 0) {
