@@ -241,63 +241,66 @@ sequenceDiagram
 ### 6. Startup & Recovery Flow
 ```mermaid
 flowchart TD
-    Start[main.cpp] --> LoadConfig[ConfigManager::load()]
-    LoadConfig --> ReadJSON[Parse config.json]
-    ReadJSON --> InitBroker[Instantiate Broker]
+    Start["main.cpp"] --> LoadConfig["ConfigManager::load()"]
+    LoadConfig --> ReadJSON["Parse config.json"]
+    ReadJSON --> InitBroker["Instantiate Broker"]
     
-    InitBroker --> InitDirs[Check / create data/ folder]
-    InitBroker --> InitTopicMgr[Instantiate TopicManager]
-    InitBroker --> InitThreads[Start Background Threads]
+    InitBroker --> InitDirs["Check / create data/ folder"]
+    InitBroker --> InitTopicMgr["Instantiate TopicManager"]
+    InitBroker --> InitThreads["Start Background Threads"]
     
-    InitThreads --> HeartbeatTh[HeartbeatManager Thread]
-    InitThreads --> RetentionTh[RetentionManager Thread]
+    InitThreads --> HeartbeatTh["HeartbeatManager Thread"]
+    InitThreads --> RetentionTh["RetentionManager Thread"]
     
-    InitBroker --> StartTCP[Instantiate & Start TcpServer]
-    StartTCP --> Listen[Socket bind() & listen()]
-    Listen --> Accept[accept() loop in main thread]
+    InitBroker --> StartTCP["Instantiate & Start TcpServer"]
+    StartTCP --> Listen["Socket bind() & listen()"]
+    Listen --> Accept["accept() loop in main thread"]
 ```
 
 ### 7. Thread Architecture
 ```mermaid
 graph TD
-    MainThread[Main Thread] -->|Accepts Connections| TcpServer
+    MainThread["Main Thread"] -->|Accepts Connections| TcpServer
     
-    subgraph TCP Thread Pool (e.g. 8 threads)
-        Worker1[Worker Thread 1] -->|Parses JSON, calls Broker API| ClientSocket1
-        Worker2[Worker Thread 2] -->|Parses JSON, calls Broker API| ClientSocket2
-        Worker3[Worker Thread 3]
-        Worker4[Worker Thread 4]
+    subgraph TCP_ThreadPool ["TCP Thread Pool (e.g. 8 threads)"]
+        Worker1["Worker Thread 1"] -->|Parses JSON, calls Broker API| ClientSocket1
+        Worker2["Worker Thread 2"] -->|Parses JSON, calls Broker API| ClientSocket2
+        Worker3["Worker Thread 3"]
+        Worker4["Worker Thread 4"]
     end
     
     TcpServer -.->|Enqueues Client Socket| TCP_Queue
     TCP_Queue -.-> Worker1
     TCP_Queue -.-> Worker2
     
-    subgraph Background Threads
-        Heartbeat[HeartbeatManager Thread] -->|Check timeouts every 1s| Broker
-        Retention[RetentionManager Thread] -->|Check disk usage every 60s| Disk
+    subgraph Background_Threads ["Background Threads"]
+        Heartbeat["HeartbeatManager Thread"] -->|Check timeouts every 1s| Broker
+        Retention["RetentionManager Thread"] -->|Check disk usage every 60s| Disk
     end
     
-    Worker1 --> |std::shared_lock| SharedState[Shared Metadata]
+    Worker1 --> |std::shared_lock| SharedState["Shared Metadata"]
     Worker2 --> |std::unique_lock| SharedState
 ```
 
 ### 8. Storage Architecture
 ```mermaid
 graph LR
-    Topic[Topic] --> Part0[Partition 0]
-    Topic --> Part1[Partition 1]
+    Topic["Topic"] --> Part0["Partition 0"]
+    Topic --> Part1["Partition 1"]
     
-    subgraph Partition 0 Directory
-        Log0[partition0.log]
-        Idx0[partition0.idx]
+    subgraph Part0_Dir ["Partition 0 Directory"]
+        Log0["partition0.log"]
+        Idx0["partition0.idx"]
     end
     
     Part0 --> Log0
     Part0 --> Idx0
     
-    Note over Log0: Append-only flat file.<br/>Binary serialization.<br/>Message = [Size][Timestamp][KeyLen][Key][ValLen][Val]
-    Note over Idx0: In-memory hash map.<br/>Maps offset -> byte position.<br/>Rebuilt on startup if missing.
+    LogNote["Append-only flat file.<br/>Binary serialization.<br/>Message = [Size][Timestamp][KeyLen][Key][ValLen][Val]"]
+    IdxNote["In-memory hash map.<br/>Maps offset to byte position.<br/>Rebuilt on startup if missing."]
+    
+    Log0 -.-> LogNote
+    Idx0 -.-> IdxNote
 ```
 
 ### 9. Network Architecture
