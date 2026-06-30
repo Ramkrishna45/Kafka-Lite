@@ -1,0 +1,7 @@
+/build/
+/data/
+/.vscode/
+__pycache__/
+*.exe
+*.log
+*.idx

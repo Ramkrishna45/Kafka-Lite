@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kafka Lite Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header>
+            <h1>Kafka Lite <span>Monitor</span></h1>
+            <div class="status-indicator">
+                <span class="dot"></span>
+                <span id="connection-status">Connected</span>
+            </div>
+        </header>
+
+        <main>
+            <div class="metrics-grid">
+                <!-- Overview Cards -->
+                <div class="metric-card">
+                    <h3>Total Topics</h3>
+                    <div class="value" id="val-topics">0</div>
+                </div>
+                <div class="metric-card">
+                    <h3>Total Partitions</h3>
+                    <div class="value" id="val-partitions">0</div>
+                </div>
+                <div class="metric-card">
+                    <h3>Disk Usage</h3>
+                    <div class="value" id="val-disk">0 MB</div>
+                </div>
+                
+                <!-- Throughput Cards -->
+                <div class="metric-card highlight-card">
+                    <h3>Msg Published/sec</h3>
+                    <div class="value" id="val-tps-pub">0</div>
+                    <div class="sub-text">Total: <span id="val-total-pub">0</span></div>
+                </div>
+                <div class="metric-card highlight-card">
+                    <h3>Msg Consumed/sec</h3>
+                    <div class="value" id="val-tps-sub">0</div>
+                    <div class="sub-text">Total: <span id="val-total-sub">0</span></div>
+                </div>
+            </div>
+
+            <!-- Consumer Groups Section -->
+            <section class="consumer-groups">
+                <h2>Consumer Groups & Lag</h2>
+                <div class="table-container">
+                    <table id="lag-table">
+                        <thead>
+                            <tr>
+                                <th>Group ID</th>
+                                <th>Topic</th>
+                                <th>Partition</th>
+                                <th>Assigned Consumer</th>
+                                <th>Lag</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

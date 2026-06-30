@@ -1,0 +1,9 @@
+{
+  "port": 9092,
+  "threadPoolSize": 8,
+  "heartbeatIntervalSeconds": 5,
+  "consumerTimeoutSeconds": 15,
+  "retentionHours": 24,
+  "maxLogSizeMB": 500,
+  "maxBatchSize": 1000
+}
