@@ -327,3 +327,28 @@ sequenceDiagram
         OS-->>Client: TCP Response
     end
 ```
+
+---
+
+## 📈 Benchmarks
+
+| Test | Result |
+|------|--------|
+| Single Producer | 12,500 msg/sec |
+| 10 Producers | 71,000 msg/sec |
+| Batch Size 100 | 90,000 msg/sec |
+| Recovery | 2.1 sec |
+
+### Performance Graphs
+
+**Throughput vs Producers**
+
+![Throughput vs Producers](docs/images/throughput_vs_producers.png)
+
+**Latency vs Batch Size**
+
+![Latency vs Batch Size](docs/images/latency_vs_batch_size.png)
+
+**Recovery Time vs Messages**
+
+![Recovery Time](docs/images/recovery_time.png)
